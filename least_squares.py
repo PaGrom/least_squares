@@ -3,6 +3,7 @@
 
 from scipy.integrate import odeint
 from pylab import * # for plotting commands
+import random
 
 
 # Установим объем выборки, предъявляемой к измерению
@@ -30,14 +31,31 @@ time = linspace(0.0, 10.0, N)
 
 # Решаем получившееся ДУ
 y = odeint(deriv, yinit, time)
+y1 = y[:, 0]
+y2 = y[:, 1]
 
 # Рисуем график зависимости результатов моделирования от времени: у1- выход модели, у2 - его производная
-figure()
+fig = figure()
 subplot(111)
-plot(time, y[:, 0], label="y1")
-plot(time, y[:, 1], label="y2")
+plot(time, y1, label="y1")
+plot(time, y2, label="y2")
 legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3,
 		ncol=2, mode="expand", borderaxespad=0.)
 xlabel('t')
 savefig("f1.png")
-show()
+
+# Построим имитатора объекта
+
+# Предположим, что ошибки распределены по нормальному закону
+n = [random.uniform(0, 0.01) for i in range(N)]
+
+# Вектор измерений
+Z = [y1[i] + n[i] for i in range(N)]
+
+# Построим график имитатора объекта при наличии случайных возмущений на интервале 0..10 с = 0.01 с
+fig.clear()
+subplot(111)
+plot(time, Z)
+xlabel('t')
+xlabel('Z')
+savefig("f2.png")
