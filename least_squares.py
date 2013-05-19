@@ -1,9 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import scipy
+print scipy.__version__
+
 from scipy.integrate import odeint
 from pylab import * # for plotting commands
 import numpy as np
+import math
 import random
 
 # 3. Практическая часть
@@ -52,7 +56,7 @@ savefig("f1.png")
 # Построим имитатора объекта
 
 # Предположим, что ошибки распределены по нормальному закону
-n = np.random.normal(0, 0.01, N)
+n = np.random.normal(0, math.sqrt(0.01), N)
 
 # Вектор измерений
 Z = [y1[i] + n[i] for i in range(N)]
@@ -109,3 +113,45 @@ S = np.column_stack((y0.T, A.T.dot(y0.T)))
 rank = np.linalg.matrix_rank(S)
 print rank
 # rank = 2, отсюда следует, что объект является идентифицируемым
+
+# 3.1.3. Вычисление матрицы измерений С
+
+# Зададим некие априорные значения параметров:
+
+teta_a = [60, 0.005, 100]
+
+def deriv2(Y, t):
+	return array([ Y[1],
+					- teta_a[0] * Y[1] - teta_a[1] * Y[0] + teta_a[2] * x(t),
+					Y[4],
+					Y[5],
+					- teta_a[1] * Y[2] - teta_a[0] * Y[4] - Y[1],
+					- teta_a[1] * Y[3] - teta_a[0] * Y[5] - Y[0]])
+
+# вектор начальных условий
+U0 = array([1, 1, 0, 0, 0, 0])
+
+# Временные границы эксперимента
+time = linspace(0.0, 100.0, N)
+
+# Решаем получившееся ДУ
+U = odeint(deriv2, U0, time)
+
+# Присвоим интересующим нас параметрам значения матрицы U:
+y1a = U[:, 0]
+C1 = np.array([U[:, 2]])
+C2 = np.array([U[:, 3]])
+
+# Получим матрицу измерений:
+C = np.column_stack((C1.T, C2.T))
+
+# Построим график cравнение выхода модели у1 и вычисленного по априорным оценкам выхода модели на интервале 0..10 с
+fig.clear()
+time = linspace(0.0, 10.0, 100)
+subplot(111)
+plot(time, y1[:100], label="y1")
+plot(time, y1a[:100], label="y1a")
+legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3,
+		ncol=2, mode="expand", borderaxespad=0.)
+xlabel('t')
+savefig("f4.png")
