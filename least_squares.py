@@ -3,6 +3,7 @@
 
 from scipy.integrate import odeint
 from pylab import * # for plotting commands
+import numpy as np
 import random
 
 
@@ -47,7 +48,7 @@ savefig("f1.png")
 # Построим имитатора объекта
 
 # Предположим, что ошибки распределены по нормальному закону
-n = [random.uniform(0, 0.01) for i in range(N)]
+n = np.random.normal(0, 0.01, N)
 
 # Вектор измерений
 Z = [y1[i] + n[i] for i in range(N)]
