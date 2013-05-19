@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import scipy
-print scipy.__version__
-
 from scipy.integrate import odeint
 from pylab import * # for plotting commands
 import numpy as np
@@ -155,3 +152,20 @@ legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3,
 		ncol=2, mode="expand", borderaxespad=0.)
 xlabel('t')
 savefig("f4.png")
+
+# Построим график чувствительности dy/d*teta1
+fig.clear()
+time = linspace(0.0, 10.0, 100)
+plot(time, C[:, 0][:100])
+xlabel('t')
+ylabel('C1')
+savefig("f5.png")
+
+# Построим график чувствительности dy/d*teta2
+fig.clear()
+time = linspace(0.0, 10.0, 100)
+plot(time, C[:, 1][:100])
+xlabel('t')
+ylabel('C2')
+savefig("f6.png")
+
