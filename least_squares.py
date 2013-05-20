@@ -67,10 +67,10 @@ savefig("f2.png")
 
 # Построим график имитатора объекта при наличии случайных возмущений на интервале 0..10 с delta = 0.01 с
 fig.clear()
-time = linspace(0.0, 10.0, 100)
+time = linspace(0.0, 2.0, N / 50)
 subplot(111)
-plot(time, y1[:100], label="y1")
-plot(time, Z[:100], label="Z")
+plot(time, y1[:N / 50], label="y1")
+plot(time, Z[:N / 50], label="Z")
 legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3,
 		ncol=2, mode="expand", borderaxespad=0.)
 xlabel('t')
@@ -113,17 +113,13 @@ print rank
 
 # 3.1.3. Вычисление матрицы измерений С
 
-# Зададим некие априорные значения параметров:
-
-teta_a = [60, 0.005, 100]
-
 def deriv2(Y, t):
-	return array([ Y[1],
-					- teta_a[0] * Y[1] - teta_a[1] * Y[0] + teta_a[2] * x(t),
+	return array([  Y[1],
+					- teta[0] * Y[1] - teta[1] * Y[0] + teta[2] * x(t),
 					Y[4],
 					Y[5],
-					- teta_a[1] * Y[2] - teta_a[0] * Y[4] - Y[1],
-					- teta_a[1] * Y[3] - teta_a[0] * Y[5] - Y[0]])
+					- teta[1] * Y[2] - teta[0] * Y[4] - Y[1],
+					- teta[1] * Y[3] - teta[0] * Y[5] - Y[0]])
 
 # вектор начальных условий
 U0 = array([1, 1, 0, 0, 0, 0])
@@ -142,30 +138,33 @@ C2 = np.array([U[:, 3]])
 # Получим матрицу измерений:
 C = np.column_stack((C1.T, C2.T))
 
-# Построим график cравнение выхода модели у1 и вычисленного по априорным оценкам выхода модели на интервале 0..10 с
-fig.clear()
-time = linspace(0.0, 10.0, 100)
-subplot(111)
-plot(time, y1[:100], label="y1")
-plot(time, y1a[:100], label="y1a")
-legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3,
-		ncol=2, mode="expand", borderaxespad=0.)
-xlabel('t')
-savefig("f4.png")
-
 # Построим график чувствительности dy/d*teta1
 fig.clear()
-time = linspace(0.0, 10.0, 100)
-plot(time, C[:, 0][:100])
+time = linspace(0.0, 100.0, N)
+plot(time, C[:, 0][:])
 xlabel('t')
 ylabel('C1')
-savefig("f5.png")
+savefig("f4.png")
 
 # Построим график чувствительности dy/d*teta2
 fig.clear()
-time = linspace(0.0, 10.0, 100)
-plot(time, C[:, 1][:100])
+time = linspace(0.0, 100.0, N)
+plot(time, C[:, 1][:])
 xlabel('t')
 ylabel('C2')
-savefig("f6.png")
+savefig("f5.png")
 
+# 3.1.4. Реализация МНК-алгоритма
+
+# Определим требуемые оценки параметров
+# teta_mnk = (C.T * C)^-1 * C.T * Z
+Q = np.matrix(C.T.dot(C))
+print Q
+
+b = C.T.dot(Z)
+print b
+
+teta_mnk = Q.I.dot(b)
+teta_mnk = np.array([abs(teta_mnk[:, i]) for i in range(2)])
+
+print teta_mnk
