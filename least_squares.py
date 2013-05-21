@@ -237,6 +237,13 @@ a2 = math.sqrt(lambda2) # 0.000126357531956
 # f2 = 0.005064986759284622
 
 # Строим эллипс рассеяния
-
-
-
+npts = 250
+theta = np.arange(npts)*2.0*math.pi/(npts-1)
+angle = np.arctan(- 197.43387714907547)
+x = 0 + 0.00176529141023*np.cos(theta)*np.cos(angle) - 0.000126357531956*np.sin(theta)*np.sin(angle)
+y = 0 + 0.00176529141023*np.cos(theta)*np.sin(angle) - 0.000126357531956*np.sin(theta)*np.cos(angle)
+clf()
+plot(x,y,color="r")
+axis([-0.002, 0.002, -0.002, 0.002])
+grid(True)
+savefig("1.ellipse.png")
