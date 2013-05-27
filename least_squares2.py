@@ -63,7 +63,7 @@ print "Рисуем график зависимости результатов �
 fig = figure()
 subplot(111)
 plot(time, y1, label="y1")
-plot(time, y2, label="y2")
+plot(time, y2, 'r--', label="y2")
 legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3,
 		ncol=2, mode="expand", borderaxespad=0.)
 xlabel('t')
@@ -91,7 +91,7 @@ fig.clear()
 time = linspace(0.0, 2.0, N / 50)
 subplot(111)
 plot(time, y1[:N / 50], label="y1")
-plot(time, Z[:N / 50], label="Z")
+plot(time, Z[:N / 50], 'r--', label="Z")
 legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3,
 		ncol=2, mode="expand", borderaxespad=0.)
 xlabel('t')
